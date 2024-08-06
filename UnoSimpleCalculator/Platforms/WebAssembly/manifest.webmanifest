@@ -1,0 +1,10 @@
+{
+  "background_color": "#ffffff",
+  "description": "UnoSimpleCalculator",
+  "display": "standalone",
+  "name": "UnoSimpleCalculator",
+  "short_name": "UnoSimpleCalculator",
+  "start_url": "/index.html",
+  "theme_color": "#ffffff",
+  "scope": "/"
+}
