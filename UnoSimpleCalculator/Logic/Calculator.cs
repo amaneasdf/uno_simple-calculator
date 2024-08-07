@@ -95,16 +95,15 @@ public record Calculator
         {
             double? number2 = calculator.HasNumber ? GetNumber(calculator.Number) : 0.0;
 
-            double result = calculator.Operator switch
+            calculator = calculator with
             {
-                "÷" => calculator.Number1!.Value / number2!.Value,
-                "×" => calculator.Number1!.Value * number2!.Value,
-                "+" => calculator.Number1!.Value + number2!.Value,
-                "−" => calculator.Number1!.Value - number2!.Value,
-                _ => throw new InvalidOperationException()
+                Number2 = number2,
+                Result = CalculateResult(
+                    calculator.Operator,
+                    calculator.Number1!.Value,
+                    number2!.Value
+                )
             };
-
-            calculator = calculator with { Number2 = number2, Result = result };
         }
 
         return calculator;
@@ -117,19 +116,14 @@ public record Calculator
             double? number2 = calculator.HasNumber ? GetNumber(calculator.Number) : 0.0;
             double percentage = number2!.Value / 100 * calculator.Number1!.Value;
 
-            double result = calculator.Operator switch
-            {
-                "÷" => calculator.Number1!.Value / percentage,
-                "×" => calculator.Number1!.Value * percentage,
-                "+" => calculator.Number1!.Value + percentage,
-                "−" => calculator.Number1!.Value - percentage,
-                _ => throw new InvalidOperationException()
-            };
-
             calculator = calculator with
             {
                 Number2 = number2,
-                Result = result,
+                Result = CalculateResult(
+                    calculator.Operator,
+                    calculator.Number1!.Value,
+                    percentage
+                ),
                 IsNumber2Percentage = true
             };
         }
@@ -145,7 +139,7 @@ public record Calculator
             {
                 Number =
                     calculator.Number?.StartsWith("-") == true
-                        ? calculator.Number?.Substring(1)
+                        ? calculator.Number?[1..]
                         : "-" + calculator.Number
             };
         }
@@ -189,4 +183,26 @@ public record Calculator
 
     private static double? GetNumber(string? number) =>
         Convert.ToDouble(number, CultureInfo.InvariantCulture);
+
+    /// <summary>
+    /// Calculates the result of a mathematical operation based on the operator and two numbers.
+    /// </summary>
+    /// <param name="operator">The operator representing the mathematical operation.</param>
+    /// <param name="firstNumber">The first number.</param>
+    /// <param name="secondNumber">The second number.</param>
+    /// <returns>The result of the mathematical operation.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if the operator is not a valid mathematical operation.</exception>
+    private static double CalculateResult(
+        string? @operator,
+        double firstNumber,
+        double secondNumber
+    ) =>
+        @operator switch
+        {
+            "÷" => firstNumber / secondNumber,
+            "×" => firstNumber * secondNumber,
+            "+" => firstNumber + secondNumber,
+            "-" => firstNumber - secondNumber,
+            _ => throw new InvalidOperationException()
+        };
 }

@@ -232,7 +232,7 @@
                         CommandParameter="back"
                         Style="{StaticResource KeypadButton}">
                     <Button.Content>
-                        <FontIcon Glyph="?"
+                        <FontIcon Glyph="&#xE926;"
                                   FontSize="36" />
                     </Button.Content>
                 </Button>
